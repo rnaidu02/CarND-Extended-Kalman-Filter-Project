@@ -48,6 +48,8 @@ int main()
 
       auto s = hasData(std::string(data));
       if (s != "") {
+
+	std::cout << "LOG:data" << s << std::endl;
       	
         auto j = json::parse(s);
 
@@ -90,7 +92,9 @@ int main()
           		iss >> timestamp;
           		meas_package.timestamp_ = timestamp;
           }
-          float x_gt;
+
+	  		//std::cout << "After reading sensor data" << std::endl;
+        float x_gt;
     	  float y_gt;
     	  float vx_gt;
     	  float vy_gt;
@@ -104,6 +108,9 @@ int main()
     	  gt_values(2) = vx_gt;
     	  gt_values(3) = vy_gt;
     	  ground_truth.push_back(gt_values);
+
+	  //std::cout << "LOG: Sensor Data:" << meas_package.raw_measurements_  << std::endl;
+	  //std::cout << "LOG: GT Data:" << gt_values << std::endl;
           
           //Call ProcessMeasurment(meas_package) for Kalman filter
     	  fusionEKF.ProcessMeasurement(meas_package);    	  
