@@ -105,6 +105,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			float vX = rho_dot * cos(phi);
 			float vY = rho_dot * sin(phi);
 
+			vX = vY = 0;
+
 			//set the state with the initial location and  velocity
 			ekf_.x_ << pX, pY, vX, vY;
     }

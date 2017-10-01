@@ -1,8 +1,12 @@
+#include <iostream>
 #include "kalman_filter.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using namespace std;
 
+const float PI = 3.14159265;
+  
 KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
@@ -56,13 +60,24 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	float sq_term = std::pow(pX, 2) + std::pow(pY, 2);
   float sq_r_term = std::pow(sq_term, 0.5);
 	float rho = sq_r_term;
-	float theta = atan(pY/pX);
+	float theta = atan2(pY, pX);
 	float rho_dot = (pX*vX+pY*vY)/sq_r_term;
 
 	VectorXd z_pred = VectorXd(3);
   z_pred << rho, theta, rho_dot;
 
 	VectorXd y = z - z_pred;
+  std::cout << "LOG: theta in y = " << y(1) << std::endl;
+	//check for the range of y(1) - theta to be within -PI to PI
+	while((y(1) > PI) || (y(1) < -1*PI))
+	{
+		if (y(1) > PI){
+			y(1) -= 2*PI;
+		} else if (y(1) < -1*PI){
+			y(1) += 2*PI;
+		}
+	}
+	std::cout << "LOG: theta after in y = " << y(1) << std::endl;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
