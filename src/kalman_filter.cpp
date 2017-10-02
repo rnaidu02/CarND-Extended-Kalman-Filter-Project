@@ -72,7 +72,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   z_pred << rho, theta, rho_dot;
 
 	VectorXd y = z - z_pred;
-  std::cout << "LOG: theta in y = " << y(1) << std::endl;
+  //std::cout << "LOG: theta in y = " << y(1) << std::endl;
 	//check for the range of y(1) - theta to be within -PI to PI
 	while((y(1) > PI) || (y(1) < -1*PI))
 	{
@@ -82,7 +82,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 			y(1) += 2*PI;
 		}
 	}
-	std::cout << "LOG: theta after in y = " << y(1) << std::endl;
+	//std::cout << "LOG: theta after in y = " << y(1) << std::endl;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
