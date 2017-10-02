@@ -1,6 +1,7 @@
 #include <iostream>
 #include "kalman_filter.h"
 
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using namespace std;
@@ -57,6 +58,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	float pY = x_(1);
 	float vX = x_(2);
 	float vY = x_(3);
+
+	pX = tools.SetMinValues(pX);
+	pY = tools.SetMinValues(pY);
+
 	float sq_term = std::pow(pX, 2) + std::pow(pY, 2);
   float sq_r_term = std::pow(sq_term, 0.5);
 	float rho = sq_r_term;

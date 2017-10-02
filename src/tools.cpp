@@ -5,6 +5,9 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
 
+const float MIN_VALUE = 0.001;
+const float LEAST_VALUE = 0.1;
+
 Tools::Tools() {}
 
 Tools::~Tools() {}
@@ -55,6 +58,10 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     * Calculate a Jacobian here.
   */
   MatrixXd Hj(3,4);
+	Hj << 0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0;
+
   //recover state parameters
   float px = x_state(0);
   float py = x_state(1);
@@ -89,4 +96,15 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
      ele_20, ele_21, ele_22, ele_23;
 
   return Hj;
+}
+
+// Helper funxtion to set min values
+float Tools::SetMinValues(float in) {
+	// if (pX < leastValue)
+	if (fabs(in) < MIN_VALUE){
+		std::cout << "LOG: min value " << in << std::endl;
+
+		in = LEAST_VALUE;
+	}
+	return in;
 }

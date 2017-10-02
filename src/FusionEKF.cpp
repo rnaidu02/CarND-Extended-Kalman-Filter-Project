@@ -8,6 +8,8 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
+
+
 /*
  * Constructor.
  */
@@ -30,6 +32,10 @@ FusionEKF::FusionEKF() {
   R_radar_ << 0.09, 0, 0,
         0, 0.0009, 0,
         0, 0, 0.09;
+
+	// Initialize H_laser_
+	H_laser_ << 1, 0, 0, 0,
+							0, 1, 0, 0;
 
   /**
   TODO:
@@ -86,6 +92,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
+		float pX, pY, vX, vY;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       /**
@@ -99,26 +106,43 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			float rho_dot = measurement_pack.raw_measurements_[2];
 
 			//Get the pX and pY values by converting from polar to cartesian space
-			float pX = rho * cos(phi);
-			float pY = rho * sin(phi);
+			pX = rho * cos(phi);
+			pY = rho * sin(phi);
 			//Get the vX and vY values by converting from polar to cartesian space
-			float vX = rho_dot * cos(phi);
-			float vY = rho_dot * sin(phi);
-
+			vX = rho_dot * cos(phi);
+			vY = rho_dot * sin(phi);
+			
+			//Set the velocity components to be 0, as deriving velocy from 
+			//the first measurement may not be perfect
 			vX = vY = 0;
 
-			//set the state with the initial location and  velocity
-			ekf_.x_ << pX, pY, vX, vY;
+
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
 		  /**
 		  Initialize state.
 		  */
 			//set the state with the initial location and zero velocity
-			ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+			pX = measurement_pack.raw_measurements_[0];
+			pY = measurement_pack.raw_measurements_[1];
+			vX = vY = 0;
+			//ekf_.x_ << , measurement_pack.raw_measurements_[1], 0, 0;
 
     }
 
+		// if (pX < leastValue)
+		pX = tools.SetMinValues(pX);
+		pY = tools.SetMinValues(pY);
+		/*
+		if (fabs(pY) < MIN_VALUE){
+			pY = LEAST_VALUE;
+		}
+		*/
+
+		//set the state with the initial location and  velocity
+		ekf_.x_ << pX, pY, vX, vY;
+
+		cout << "LOG: x_: " << ekf_.x_ << endl;
 		//Set the time time stamp for finding the time difference between samples
 		previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update

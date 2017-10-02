@@ -29,6 +29,9 @@ public:
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
 
+	// Helper funxtion to set min values
+	float SetMinValues(float in);
+
 };
 
 #endif /* TOOLS_H_ */

@@ -1,0 +1,17 @@
+
+
+- Improvements made:
+
+	- Initialize radar values
+		- derive px, py, vx, and vy from the initial data 
+			- experimented with having vx, vy to 0 and using the derived values. It seems using derived values gave the reduced rmse for vx and vy (0.58, 0.8 vs 0.58, 0.81)
+	- Normalize theta values 
+		- make sure the theta values betweek -pi to pi
+	- 
+
+
+Results:
+    - with radar init data, normalized phi values: .23, .34, .58, .80
+
+H_laser init probelm. Once this is init, then the values are fine: .098, 0.085, 0.44. 0.46
+			
